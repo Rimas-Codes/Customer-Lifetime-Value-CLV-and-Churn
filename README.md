@@ -30,7 +30,6 @@
 - [Challenges & Lessons Learned](#challenges--lessons-learned)
 - [Future Improvements](#future-improvements)
 - [Skills Demonstrated](#skills-demonstrated)
-- [Resume Project Summary](#resume-project-summary)
 
 ---
 
@@ -551,21 +550,9 @@ clv_model_metrics
 
 # Dashboard Preview
 
-## Executive Summary
-
-dashboard/quicksight_screenshots/executive_summary.png
-
-## Customer Segmentation
-
-dashboard/quicksight_screenshots/customer_segmentation.png
-
-## Churn Dashboard
-
-dashboard/quicksight_screenshots/churn_dashboard.png
-
 ## CLV Dashboard
 
-dashboard/quicksight_screenshots/clv_dashboard.png
+dashboard/dashboard_Screenshot.png
 
 ---
 
@@ -648,12 +635,6 @@ Potential enhancements include:
 - Dashboard Design
 - KPI Development
 - Executive Reporting
-
----
-
-# Resume Project Summary
-
-Built an end-to-end customer analytics and machine learning platform on AWS using Amazon S3, Athena, SageMaker, SQL, Python, and Power BI. Engineered customer-level RFM features for 93K+ customers, developed churn and Customer Lifetime Value (CLV) prediction workflows, created customer segmentation models, integrated machine learning outputs into Athena, and delivered executive dashboards for business decision-making. Demonstrated cloud data engineering, SQL analytics, machine learning evaluation, target leakage detection, and business intelligence reporting within a unified AWS architecture.
 
 ---
 
