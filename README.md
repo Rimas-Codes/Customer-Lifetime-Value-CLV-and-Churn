@@ -121,44 +121,9 @@ To answer these questions, an end-to-end analytics platform was built using AWS 
 
 ---
 
-# Architecture
-
-## End-to-End Analytics Pipeline
-
-```mermaid
-flowchart TD
-
-A[Olist Dataset]
---> B[Amazon S3 Data Lake]
-
-B --> C[Amazon Athena]
-
-C --> D[Feature Engineering]
-
-D --> E[Customer Segmentation]
-
-E --> F[Churn Dataset]
-
-E --> G[CLV Dataset]
-
-F --> H[Amazon SageMaker]
-
-G --> H
-
-H --> I[Predictions & Metrics]
-
-I --> J[Amazon S3]
-
-J --> K[Athena Analytics Views]
-
-K --> L[Power BI Dashboard]
-```
-
----
-
 ## Architecture Diagram
 
-![AWS Architecture](architecture/aws_architecture.png)
+![AWS Architecture](architecture/block_diagram.png)
 
 ---
 
@@ -190,14 +155,14 @@ customer-clv-churn-aws/
 │   └── clv_features.sql
 │
 ├── notebooks/
-│   ├── churn_model.ipynb
 │   └── clv_model.ipynb
 │
 ├── dashboard/
-│   └── quicksight_screenshots/
+│   ├── AWS PowerBI project.pbix
+│   └── dashboard_Screenshot
 │
 ├── architecture/
-│   └── aws_architecture.png
+│   └── block_diagram.png
 │
 └── README.md
 ```
