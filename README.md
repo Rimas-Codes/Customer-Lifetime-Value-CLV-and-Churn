@@ -14,7 +14,6 @@
 - [Project Overview](#project-overview)
 - [Business Problem](#business-problem)
 - [Project Outcomes](#project-outcomes)
-- [Architecture](#architecture)
 - [Technology Stack](#technology-stack)
 - [Repository Structure](#repository-structure)
 - [Dataset](#dataset)
@@ -123,7 +122,7 @@ To answer these questions, an end-to-end analytics platform was built using AWS 
 
 # Architecture Diagram
 
-![AWS Architecture](architecture/block_diagram)
+![AWS Architecture](architecture/block_diagram.jpg)
 
 ---
 
