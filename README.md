@@ -121,9 +121,9 @@ To answer these questions, an end-to-end analytics platform was built using AWS 
 
 ---
 
-## Architecture Diagram
+# Architecture Diagram
 
-![AWS Architecture](architecture/block_diagram.png)
+![AWS Architecture](architecture/block_diagram)
 
 ---
 
