@@ -519,7 +519,9 @@ clv_model_metrics
 
 ---
 
-dashboard/dashboard_Screenshot.png
+### Dashboard Screenshot
+
+![Dashboard Screenshot](dashboard/dashboard_Screenshot.png)
 
 ---
 
