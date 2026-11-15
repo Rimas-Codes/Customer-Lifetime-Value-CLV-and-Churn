@@ -318,6 +318,15 @@ This finding reflects a common business pattern where a small proportion of cust
 
 # Churn Analysis
 
+## What is Customer Churn?
+
+Customer churn refers to customers who stop purchasing or engaging with a business over a period of time.
+
+For e-commerce companies, retaining existing customers is often significantly less expensive than acquiring new ones. As a result, identifying customers at risk of churn is an important business objective.
+
+In this project, a customer is classified as churned when no purchase activity has occurred for more than 180 days. This rule provides a simple and interpretable method for identifying inactive customers using historical transaction data.
+
+
 ## Churn Definition
 
 A customer is classified as churned when:
@@ -419,6 +428,22 @@ The churn model is included primarily to demonstrate the AWS machine learning wo
 
 # Customer Lifetime Value Prediction
 
+## What is Customer Lifetime Value (CLV)?
+
+Customer Lifetime Value (CLV) is a metric that estimates the total revenue a customer is expected to generate throughout their relationship with a business.
+
+Understanding CLV helps organizations:
+
+- Prioritize high-value customers
+- Improve customer retention strategies
+- Optimize marketing investments
+- Forecast future revenue
+- Allocate resources more effectively
+
+Rather than focusing only on past purchases, CLV attempts to estimate future customer value and supports long-term business decision-making.
+
+In this project, CLV is approximated by predicting future customer spending based on historical purchasing behavior and RFM metrics.
+
 A second workflow was developed to estimate future customer spending.
 
 ---
@@ -475,7 +500,14 @@ Amazon SageMaker
 | Metric | Value |
 |----------|----------:|
 | MAE | 3.558 |
-| RMSE | 19.siness insight.
+| RMSE | 19.839 |
+| R² | 0.000154 |
+
+### Interpretation
+
+The model achieved an R² value close to zero, indicating that historical RFM metrics explain very little of the variation in future customer spending.
+
+Although the model performance is weak, the result provides a realistic and valuable business insight. Many customers in the Olist dataset make only a single purchase, making future spending difficult to predict using transactional data alone.
 
 Possible causes include:
 
@@ -488,6 +520,7 @@ This demonstrates an important lesson in data science:
 
 > Not every business problem is highly predictable using simple historical features.
 
+In a production environment, additional features such as customer tenure, product categories, review scores, delivery experience, marketing interactions, and customer engagement metrics would likely be required to improve predictive performance.
 ---
 
 # SQL Techniques Demonstrated
