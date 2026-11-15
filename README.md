@@ -519,39 +519,6 @@ clv_model_metrics
 
 ---
 
-## Dashboard Pages
-
-### Executive Summary
-
-- Total Revenue
-- Total Customers
-- Average Order Value
-- Churn Rate
-
-### Customer Segmentation
-
-- Segment Distribution
-- Revenue by Segment
-- Segment Performance
-
-### Churn Analysis
-
-- Churn Distribution
-- Recency by Churn Status
-- Churn Drivers
-
-### CLV Prediction
-
-- Actual vs Predicted Spend
-- Prediction Error Analysis
-- CLV Distribution
-
----
-
-# Dashboard Preview
-
-## CLV Dashboard
-
 dashboard/dashboard_Screenshot.png
 
 ---
