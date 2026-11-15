@@ -1,433 +1,704 @@
-# Customer Lifetime Value Prediction & Churn Risk Analysis on AWS
+# Customer Lifetime Value (CLV) Prediction & Churn Risk Analysis on AWS
 
-An end-to-end cloud analytics and machine learning project built on AWS using the **Olist Brazilian E-Commerce dataset**. The solution covers a data lake on Amazon S3, SQL feature engineering in Amazon Athena, churn and CLV modelling in Amazon SageMaker, and an executive dashboard in Power BI.
+> End-to-End Customer Analytics, Machine Learning, and Business Intelligence Solution built on AWS using the Olist Brazilian E-Commerce Dataset.
 
 ![AWS](https://img.shields.io/badge/AWS-S3%20%7C%20Athena%20%7C%20SageMaker-FF9900?logo=amazonaws&logoColor=white)
-![SQL](https://img.shields.io/badge/SQL-Athena%20(Presto%2FTrino)-blue)
-![Python](https://img.shields.io/badge/Python-scikit--learn-3776AB?logo=python&logoColor=white)
-![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?logo=powerbi&logoColor=black)
+![SQL](https://img.shields.io/badge/SQL-Athena-blue)
+![Python](https://img.shields.io/badge/Python-Scikit--Learn-3776AB?logo=python&logoColor=white)
+![PowerBI](https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?logo=powerbi&logoColor=black)
 
 ---
 
-## Table of Contents
+# Table of Contents
 
-1. [Project Overview](#project-overview)
-2. [Business Problem](#business-problem)
-3. [Architecture](#architecture)
-4. [Tech Stack](#tech-stack)
-5. [Dataset](#dataset)
-6. [AWS Environment](#aws-environment)
-7. [Data Lake Structure](#data-lake-structure)
-8. [Implementation Walkthrough](#implementation-walkthrough)
-9. [Customer Segmentation Results](#customer-segmentation-results)
-10. [Churn Analysis & Model](#churn-analysis--model)
-11. [CLV Prediction Model](#clv-prediction-model)
-12. [Power BI Dashboard](#power-bi-dashboard)
-13. [Key Business Insights](#key-business-insights)
-14. [Challenges & Lessons Learned](#challenges--lessons-learned)
-15. [Limitations & Next Steps](#limitations--next-steps)
-16. [Repository Structure](#repository-structure)
-17. [Author](#author)
-
----
-
-## Project Overview
-
-This project demonstrates a full customer analytics workflow in the cloud:
-
-1. Ingest raw e-commerce data into an **S3 data lake**.
-2. Query it in place with **Athena external tables**.
-3. Engineer **RFM features**, churn labels and customer segments with SQL.
-4. Train **churn** and **CLV** models in **SageMaker**.
-5. Write predictions and metrics back to S3 and expose them through Athena.
-6. Deliver insights through a **Power BI** dashboard connected to Athena via ODBC.
-
-The aim is a portfolio-quality solution that spans **AWS data engineering, AWS machine learning, SQL, Power BI and customer analytics**.
+- [Project Overview](#project-overview)
+- [Business Problem](#business-problem)
+- [Project Outcomes](#project-outcomes)
+- [Architecture](#architecture)
+- [Technology Stack](#technology-stack)
+- [Repository Structure](#repository-structure)
+- [Dataset](#dataset)
+- [AWS Environment](#aws-environment)
+- [Data Lake Architecture](#data-lake-architecture)
+- [Customer Analytics Framework](#customer-analytics-framework)
+- [Customer Segmentation](#customer-segmentation)
+- [Churn Analysis](#churn-analysis)
+- [Churn Prediction Model](#churn-prediction-model)
+- [Customer Lifetime Value Prediction](#customer-lifetime-value-prediction)
+- [SQL Techniques Demonstrated](#sql-techniques-demonstrated)
+- [Power BI Dashboard](#power-bi-dashboard)
+- [Key Business Insights](#key-business-insights)
+- [Challenges & Lessons Learned](#challenges--lessons-learned)
+- [Future Improvements](#future-improvements)
+- [Skills Demonstrated](#skills-demonstrated)
+- [Resume Project Summary](#resume-project-summary)
 
 ---
 
-## Business Problem
+# Project Overview
 
-E-commerce companies need to answer questions such as:
+This project demonstrates the design and implementation of an end-to-end cloud analytics and machine learning platform using AWS services and the Olist Brazilian E-Commerce Dataset.
 
-- Which customers are most valuable?
-- Which customers are likely to stop purchasing?
-- How should marketing resources be allocated?
-- Which customers should be targeted for retention campaigns?
+The solution integrates Amazon S3, Amazon Athena, Amazon SageMaker, SQL, Python, and Power BI to perform:
 
-The Olist dataset provides transaction-level information that makes it possible to build a customer analytics framework to address these questions.
+- Customer analytics
+- RFM segmentation
+- Churn risk analysis
+- Customer Lifetime Value (CLV) prediction
+- Executive dashboard reporting
+
+The project showcases practical skills in cloud data engineering, customer analytics, machine learning, and business intelligence while highlighting real-world challenges such as target leakage and limited predictive power in customer behavior models.
 
 ---
 
-## Architecture
+# Business Problem
+
+E-commerce businesses need to answer several critical questions:
+
+- Which customers generate the most value?
+- Which customers are at risk of churning?
+- How should retention budgets be allocated?
+- Which customer groups deserve targeted campaigns?
+- Can future customer value be estimated using historical purchasing behavior?
+
+To answer these questions, an end-to-end analytics platform was built using AWS cloud services and customer transaction data.
+
+---
+
+# Project Outcomes
+
+### Data Engineering
+
+✅ Built a cloud-native analytics architecture on AWS
+
+✅ Designed and implemented a data lake on Amazon S3
+
+✅ Created Athena External Tables over raw CSV files
+
+✅ Built reusable SQL feature engineering pipelines
+
+✅ Exported machine learning datasets to S3
+
+---
+
+### Analytics
+
+✅ Processed and analyzed **93,358 customers**
+
+✅ Developed an RFM-based customer analytics framework
+
+✅ Performed customer segmentation analysis
+
+✅ Generated churn-risk indicators
+
+✅ Built customer-level analytical datasets
+
+---
+
+### Machine Learning
+
+✅ Built churn prediction workflows in SageMaker
+
+✅ Built CLV prediction workflows in SageMaker
+
+✅ Evaluated machine learning performance
+
+✅ Identified and documented target leakage
+
+✅ Demonstrated real-world model evaluation practices
+
+---
+
+### Business Intelligence
+
+✅ Connected Athena directly to Power BI
+
+✅ Developed executive dashboards
+
+✅ Delivered customer segmentation insights
+
+✅ Delivered churn and CLV reporting
+
+---
+
+# Architecture
+
+## End-to-End Analytics Pipeline
 
 ```mermaid
 flowchart TD
-    A[Olist E-Commerce Dataset] --> B[Amazon S3<br/>Data Lake]
-    B --> C[Athena External Tables]
-    C --> D[Feature Engineering<br/>RFM, Churn Labels, Segments]
-    D --> E[Amazon SageMaker<br/>Churn + CLV Models]
-    E --> F[Predictions & Metrics<br/>written back to S3]
-    F --> G[Athena External Tables]
-    G --> H[Unified Analytics View<br/>customer_analytics]
-    H --> I[Power BI Dashboard<br/>via ODBC]
+
+A[Olist Dataset]
+--> B[Amazon S3 Data Lake]
+
+B --> C[Amazon Athena]
+
+C --> D[Feature Engineering]
+
+D --> E[Customer Segmentation]
+
+E --> F[Churn Dataset]
+
+E --> G[CLV Dataset]
+
+F --> H[Amazon SageMaker]
+
+G --> H
+
+H --> I[Predictions & Metrics]
+
+I --> J[Amazon S3]
+
+J --> K[Athena Analytics Views]
+
+K --> L[Power BI Dashboard]
 ```
 
-> You can also place an exported architecture diagram at `architecture/aws_architecture.png` and reference it here.
+---
+
+## Architecture Diagram
+
+![AWS Architecture](architecture/aws_architecture.png)
 
 ---
 
-## Tech Stack
+# Technology Stack
 
 | Layer | Technology |
-|---|---|
-| Storage / Data Lake | Amazon S3 |
-| Query & Feature Engineering | Amazon Athena (SQL) |
-| Machine Learning | Amazon SageMaker Notebook, Python (Logistic Regression, Linear Regression) |
-| Business Intelligence | Power BI Desktop (Athena ODBC connection) |
-| Documentation | GitHub / Markdown |
+|---------|------------|
+| Cloud Platform | AWS |
+| Data Lake | Amazon S3 |
+| Analytics Engine | Amazon Athena |
+| Machine Learning | Amazon SageMaker |
+| Programming Language | Python |
+| Query Language | SQL |
+| Visualization | Power BI |
+| Dataset | Olist Brazilian E-Commerce Dataset |
 
 ---
 
-## Dataset
+# Repository Structure
 
-**Olist Brazilian E-Commerce Dataset**
-
-- Period covered: **2016-09-04 to 2018-10-17**
-- Tables used in the analysis:
-
-| Table | Key columns |
-|---|---|
-| `olist_orders` | `order_id`, `customer_id`, `order_purchase_timestamp` |
-| `olist_customers` | `customer_id`, `customer_unique_id` |
-| `olist_order_payments` | `order_id`, `payment_value` |
-
-`customer_unique_id` is used as the customer identifier, since `customer_id` is generated per order.
-
----
-
-## AWS Environment
-
-| Setting | Value |
-|---|---|
-| Region | `ap-southeast-2` (Sydney) |
-| S3 bucket | `rimas-olist-clv-project2` |
-| Athena database | `olist_db` |
-| SageMaker notebook | `olist-churn-analysis` |
-| Power BI connection | Athena via ODBC |
+```text
+customer-clv-churn-aws/
+│
+├── data/
+│
+├── sql/
+│   ├── rfm.sql
+│   ├── churn_features.sql
+│   └── clv_features.sql
+│
+├── notebooks/
+│   ├── churn_model.ipynb
+│   └── clv_model.ipynb
+│
+├── dashboard/
+│   └── quicksight_screenshots/
+│
+├── architecture/
+│   └── aws_architecture.png
+│
+└── README.md
+```
 
 ---
 
-## Data Lake Structure
+# Dataset
+
+## Olist Brazilian E-Commerce Dataset
+
+The project uses the publicly available Olist Brazilian E-Commerce Dataset containing customer, order, payment, seller, and product information from a Brazilian online marketplace.
+
+### Dataset Period
+
+```text
+2016-09-04 to 2018-10-17
+```
+
+### Primary Tables
+
+| Table | Description |
+|---------|-------------|
+| olist_orders | Customer order transactions |
+| olist_customers | Customer identifiers |
+| olist_order_payments | Payment and revenue information |
+
+### Key Columns
+
+#### Orders
+
+```text
+order_id
+customer_id
+order_purchase_timestamp
+```
+
+#### Customers
+
+```text
+customer_id
+customer_unique_id
+```
+
+#### Payments
+
+```text
+order_id
+payment_value
+```
+
+**Note:** `customer_unique_id` is used as the customer identifier because `customer_id` changes across orders.
+
+---
+
+# AWS Environment
+
+| Resource | Configuration |
+|------------|------------|
+| AWS Region | ap-southeast-2 (Sydney) |
+| S3 Bucket | rimas-olist-clv-project2 |
+| Athena Database | olist_db |
+| SageMaker Notebook | olist-churn-analysis |
+| BI Tool | Power BI |
+
+---
+
+# Data Lake Architecture
 
 ```text
 s3://rimas-olist-clv-project2/
+
 ├── raw/
-├── athena/                      # Athena query results
+├── athena/
+│
 └── ml/
     ├── churn/
     │   └── current-snapshot/
-    │       └── olist_customer_features_current_snapshot.csv
+    │
     ├── clv/
-    │   └── olist_clv_training_dataset.csv
+    │
     ├── predictions/
-    │   └── clv_predictions.csv
+    │
     └── metrics/
-        └── clv_model_metrics.csv
 ```
 
-Bucket settings: general purpose bucket, ACLs disabled, all public access blocked, SSE-S3 encryption.
+Both raw and machine learning datasets are stored in Amazon S3, allowing Athena and Power BI to consume data from a centralized storage layer.
 
 ---
 
-## Implementation Walkthrough
+# Customer Analytics Framework
 
-### 1. S3 data lake
-Raw Olist CSV files are uploaded to S3 and organised into prefixes (e.g. `orders/`, `customers/`, `payments/`) so each Athena table points at its own folder. Athena query results are written to a dedicated results location.
+## RFM Analysis
 
-### 2. Athena external tables
-Tables are defined over the CSV files using the OpenCSV SerDe, with the header row skipped.
+Customer behavior was analyzed using the RFM Framework.
 
-```sql
-CREATE DATABASE olist_db;
+### Recency
 
-CREATE EXTERNAL TABLE olist_orders (
-  order_id STRING,
-  customer_id STRING,
-  order_status STRING,
-  order_purchase_timestamp STRING,
-  order_approved_at STRING,
-  order_delivered_carrier_date STRING,
-  order_delivered_customer_date STRING,
-  order_estimated_delivery_date STRING
-)
-ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
-WITH SERDEPROPERTIES ("separatorChar" = ",", "quoteChar" = "\"")
-STORED AS TEXTFILE
-LOCATION 's3://rimas-olist-clv-project2/orders/'
-TBLPROPERTIES ("skip.header.line.count" = "1");
-```
+Days since the customer’s last purchase.
 
-`olist_customers` and `olist_order_payments` are created the same way.
+### Frequency
 
-### 3. RFM base view
-Delivered orders are joined to payments and customers to compute order value per customer.
+Total number of purchases made by a customer.
 
-```sql
-CREATE VIEW olist_rfm_base AS
-SELECT
-  o.order_id,
-  c.customer_unique_id,
-  o.order_purchase_timestamp,
-  SUM(p.payment_value) AS total_order_value
-FROM olist_orders o
-LEFT JOIN olist_order_payments p ON o.order_id = p.order_id
-LEFT JOIN olist_customers c      ON o.customer_id = c.customer_id
-WHERE o.order_status = 'delivered'
-GROUP BY o.order_id, c.customer_unique_id, o.order_purchase_timestamp;
-```
+### Monetary
 
-### 4. RFM calculation
-Recency is measured against a fixed analysis date of `2018-09-01`.
-
-```sql
-CREATE VIEW olist_rfm_calc AS
-WITH customer_rfm AS (
-  SELECT
-    customer_unique_id,
-    DATE '2018-09-01' AS analysis_date,
-    CAST(MAX(date_parse(order_purchase_timestamp, '%Y-%m-%d %H:%i:%s')) AS DATE) AS last_order_date,
-    COUNT(DISTINCT order_id) AS frequency,
-    SUM(total_order_value)   AS monetary
-  FROM olist_rfm_base
-  GROUP BY customer_unique_id
-)
-SELECT
-  customer_unique_id, analysis_date, last_order_date,
-  date_diff('day', last_order_date, analysis_date) AS recency,
-  frequency, monetary
-FROM customer_rfm;
-```
-
-### 5. Churn label, features and segments
-A customer is flagged as churned if inactive for **more than 180 days**.
-
-```sql
-CREATE VIEW olist_customer_features AS
-SELECT
-  customer_unique_id, recency, frequency, monetary,
-  monetary / NULLIF(frequency, 0) AS avg_order_value,
-  CASE WHEN recency > 180 THEN 1 ELSE 0 END AS churned
-FROM olist_rfm_calc;
-
-CREATE VIEW olist_customer_segments AS
-SELECT *,
-  CASE
-    WHEN monetary >= 500 THEN 'High Value'
-    WHEN monetary >= 200 THEN 'Medium Value'
-    ELSE 'Low Value'
-  END AS customer_segment
-FROM olist_customer_features;
-```
-
-### 6. ML dataset export
-The segmented customer dataset (93,358 customers) is exported and saved to S3 as `olist_customer_features_current_snapshot.csv`, then used as input to SageMaker.
-
-### 7. Modelling in SageMaker
-Two models were trained in a SageMaker notebook (`ml.t3.medium`): a churn classifier and a CLV regressor. Predictions and metrics were written back to S3 and exposed through Athena external tables.
-
-### 8. Unified analytics view
-The `customer_analytics` Athena view combines the engineered features, segments, churn flag and model predictions:
-
-`customer_unique_id`, `recency`, `frequency`, `monetary`, `avg_order_value`, `churned`, `customer_segment`, `predicted_clv`
+Total revenue generated by a customer.
 
 ---
 
-## Customer Segmentation Results
+## Why RFM?
 
-Segments are based on total customer spend (`monetary`).
+RFM analysis is widely used because it provides a simple and interpretable method for identifying customer value and purchasing behavior.
 
-| Segment | Rule | Customers | Share |
-|---|---|---:|---:|
-| Low Value | < 200 | 73,371 | 78.6% |
-| Medium Value | 200 – 499 | 15,722 | 16.8% |
-| High Value | ≥ 500 | 4,265 | 4.6% |
-| **Total** | | **93,358** | |
+Common business applications include:
+
+- Customer segmentation
+- Retention campaigns
+- Loyalty programs
+- Revenue optimization
+- Marketing personalization
 
 ---
 
-## Churn Analysis & Model
+# Customer Segmentation
 
-### Churn distribution (churn = inactive > 180 days)
+Customers were segmented using Monetary value.
 
-| Status | Customers |
-|---|---:|
+## Segment Rules
+
+| Segment | Rule |
+|----------|----------|
+| High Value | Monetary ≥ 500 |
+| Medium Value | Monetary ≥ 200 |
+| Low Value | Monetary < 200 |
+
+---
+
+## Segmentation Results
+
+| Segment | Customers | Share |
+|----------|------------:|------------:|
+| Low Value | 73,371 | 78.6% |
+| Medium Value | 15,722 | 16.8% |
+| High Value | 4,265 | 4.6% |
+
+### Business Interpretation
+
+The customer base is heavily concentrated in the Low Value segment.
+
+Only 4.6% of customers belong to the High Value segment, making them the most valuable audience for retention and loyalty initiatives.
+
+This finding reflects a common business pattern where a small proportion of customers often contributes a disproportionately large share of value.
+
+---
+
+# Churn Analysis
+
+## Churn Definition
+
+A customer is classified as churned when:
+
+```text
+Recency > 180 days
+```
+
+---
+
+## Churn Distribution
+
+| Customer Status | Customers |
+|-----------------|-----------:|
 | Active | 37,559 |
 | Churned | 55,799 |
 
-### Behaviour by churn status
+---
+
+## Customer Behavior Comparison
 
 | Metric | Active | Churned |
-|---|---:|---:|
-| Avg Recency (days) | 93.40 | 339.48 |
-| Avg Frequency | 1.04 | 1.03 |
-| Avg Monetary | 169.49 | 162.31 |
+|----------|----------:|----------:|
+| Average Recency | 93.40 | 339.48 |
+| Average Frequency | 1.04 | 1.03 |
+| Average Monetary | 169.49 | 162.31 |
 
-**Recency is the dominant differentiator.** Frequency and spend are almost identical between active and churned customers.
+### Key Finding
 
-### Churn prediction model
+Recency emerged as the strongest churn indicator.
 
-- **Platform:** Amazon SageMaker
-- **Model:** Logistic Regression
-- **Features:** `recency`, `frequency`, `monetary`, `avg_order_value`
-- **Target:** `churned`
+Customers who had not purchased recently were much more likely to be classified as churned, while Frequency and Monetary metrics showed relatively little separation between active and churned groups.
 
-| Metric | Score |
-|---|---:|
+---
+
+# Churn Prediction Model
+
+### Model
+
+```text
+Logistic Regression
+```
+
+### Platform
+
+```text
+Amazon SageMaker
+```
+
+### Features
+
+```text
+recency
+frequency
+monetary
+avg_order_value
+```
+
+### Target
+
+```text
+churned
+```
+
+---
+
+## Important Disclaimer
+
+⚠️ These results should not be interpreted as production-quality performance.
+
+The churn label was derived directly from Recency, while Recency was also included as a model feature. This introduced target leakage and artificially inflated performance metrics.
+
+The churn model is included primarily to demonstrate the AWS machine learning workflow.
+
+---
+
+## Model Performance
+
+| Metric | Value |
+|----------|-------:|
 | Accuracy | 1.00 |
 | Precision | 1.00 |
 | Recall | 1.00 |
 | F1 Score | 1.00 |
 | ROC-AUC | 1.00 |
 
+---
+
+## Feature Importance
+
 | Feature | Coefficient |
-|---|---:|
+|----------|------------:|
 | Recency | 6.624 |
 | Avg Order Value | 0.0019 |
 | Monetary | -0.0020 |
 | Frequency | -0.0489 |
 
-> ### ⚠️ Target leakage
-> The churn label was derived directly from `recency` (`recency > 180`), and `recency` was also used as a model feature. The perfect scores therefore reflect leakage, not genuine predictive ability. This model is included **as proof of the AWS machine learning pipeline** and should **not** be treated as a production-ready churn solution.
+---
+
+# Customer Lifetime Value Prediction
+
+A second workflow was developed to estimate future customer spending.
 
 ---
 
-## CLV Prediction Model
-
-A second workflow predicts future customer spend using a time-based split to avoid leakage.
-
-| Window | Dates |
-|---|---|
-| Feature window | Before 2018-03-01 |
-| Prediction window | 2018-03-01 to 2018-09-01 |
-
-- **Features:** `recency`, `frequency`, `monetary`, `avg_order_value`
-- **Target:** `future_spend`
-- **Model:** Linear Regression (Amazon SageMaker)
-- **Training dataset:** `s3://rimas-olist-clv-project2/ml/clv/olist_clv_training_dataset.csv`
-
-### Results
-
-| Metric | Value |
-|---|---:|
-| MAE | 3.558 |
-| RMSE | 19.839 |
-| R² | 0.000154 |
-
-Customers with CLV predictions in `customer_analytics`: **55,544** (of 93,358).
-
-### Interpretation
-
-With R² ≈ 0, simple RFM features have very little predictive power for future spend in this dataset. This is an honest, realistic outcome. Likely contributing factors:
-
-- A large share of one-time customers
-- Limited repeat purchasing
-- No behavioural features (e.g. browsing, product category, reviews, delivery experience)
-- Short customer history
-
-Model outputs:
-
-- Predictions: `s3://rimas-olist-clv-project2/ml/predictions/clv_predictions.csv`
-- Metrics: `s3://rimas-olist-clv-project2/ml/metrics/clv_model_metrics.csv`
-
----
-
-## Power BI Dashboard
-
-The dashboard connects to Athena via ODBC and loads two tables: `customer_analytics` and `clv_model_metrics`.
-
-| Page | Contents |
-|---|---|
-| **Executive Summary** | Total Revenue, Total Customers, Average Order Value, Churn Rate |
-| **Customer Segmentation** | Segment distribution, revenue by segment, segment performance |
-| **Churn Analysis** | Churn distribution, recency by churn status, churn drivers |
-| **CLV Prediction** | Actual vs predicted spend, prediction error analysis, CLV distribution |
-
-<!-- Add screenshots, e.g.:
-![Executive Summary](dashboard/screenshots/executive_summary.png)
-![Customer Segmentation](dashboard/screenshots/customer_segmentation.png)
-![Churn Analysis](dashboard/screenshots/churn_analysis.png)
-![CLV Prediction](dashboard/screenshots/clv_prediction.png)
--->
-
----
-
-## Key Business Insights
-
-- **Recency is the strongest indicator of churn.** Churned customers average ~339 days since last purchase vs ~93 for active customers.
-- **Most customers buy once.** Average frequency is ~1.0 for both active and churned customers, so retention and repeat-purchase strategies are the main growth lever.
-- **Value is concentrated.** Only ~4.6% of customers are High Value, while ~79% are Low Value. The High Value group is the natural target for retention campaigns.
-- **Simple RFM is not enough to forecast future spend.** Richer behavioural features are needed for a useful CLV model.
-
----
-
-## Challenges & Lessons Learned
-
-- **Target leakage detection.** A perfect churn model was a red flag. Feature importance analysis showed that recency dominated because the label was built from it.
-- **Honest reporting of weak models.** A near-zero R² is a legitimate finding, and it was documented rather than hidden.
-- **Time-based validation.** Separating the feature window from the prediction window is essential for CLV problems.
-- **Cloud setup.** New AWS accounts can hit SageMaker resource limits; local Python / Jupyter / VS Code is a viable fallback.
-
-**Skills practised:** S3 data lake design, Athena external tables, SQL feature engineering, RFM analysis, customer segmentation, churn analysis, model evaluation, leakage detection, Power BI KPI design and executive reporting.
-
----
-
-## Limitations & Next Steps
-
-**Limitations**
-
-- The churn model suffers from target leakage and is illustrative only.
-- The CLV model has near-zero predictive power with RFM features alone.
-- Customer segments use fixed spend thresholds rather than data-driven clustering.
-
-**Possible improvements**
-
-- Define churn on a future window (e.g. no purchase in the next N days) using only past behaviour.
-- Add features: product category, review scores, delivery delays, payment type, geography.
-- Try probabilistic CLV models (BG/NBD + Gamma-Gamma) and tree-based models (XGBoost / LightGBM).
-- Use data-driven segmentation (quantile-based RFM scoring or K-Means).
-- Convert CSV outputs to Parquet and partition for lower Athena cost.
-- Automate the pipeline (Glue / Step Functions) and add data-quality checks.
-
----
-
-## Repository Structure
+## Feature Window
 
 ```text
-customer-clv-churn-aws/
-├── README.md
-├── architecture/
-│   └── aws_architecture.png
-├── sql/
-│   ├── 01_create_tables.sql
-│   ├── 02_rfm_views.sql
-│   ├── 03_churn_and_segments.sql
-│   └── 04_customer_analytics_view.sql
-├── notebooks/
-│   ├── churn_model.ipynb
-│   └── clv_model.ipynb
-├── dashboard/
-│   ├── customer_analytics.pbix
-│   └── screenshots/
-└── results/
-    └── clv_model_metrics.csv
+Before 2018-03-01
+```
+
+### Features
+
+```text
+recency
+frequency
+monetary
+avg_order_value
 ```
 
 ---
 
-## Author
+## Prediction Window
+
+```text
+2018-03-01 to 2018-09-01
+```
+
+### Target
+
+```text
+future_spend
+```
+
+---
+
+# CLV Prediction Model
+
+### Model
+
+```text
+Linear Regression
+```
+
+### Platform
+
+```text
+Amazon SageMaker
+```
+
+---
+
+## Model Performance
+
+| Metric | Value |
+|----------|----------:|
+| MAE | 3.558 |
+| RMSE | 19.siness insight.
+
+Possible causes include:
+
+- High concentration of one-time buyers
+- Limited repeat purchasing behavior
+- Lack of behavioral features
+- Short customer purchase histories
+
+This demonstrates an important lesson in data science:
+
+> Not every business problem is highly predictable using simple historical features.
+
+---
+
+# SQL Techniques Demonstrated
+
+This project demonstrates several important SQL techniques in Amazon Athena:
+
+- Common Table Expressions (CTEs)
+- Multi-table joins
+- Aggregations
+- Date functions
+- Customer feature engineering
+- Athena view creation
+- RFM analytics
+- Customer segmentation logic
+- Churn label generation
+
+---
+
+# Power BI Dashboard
+
+Power BI connects directly to Athena via ODBC.
+
+## Data Sources
+
+```text
+customer_analytics
+clv_model_metrics
+```
+
+---
+
+## Dashboard Pages
+
+### Executive Summary
+
+- Total Revenue
+- Total Customers
+- Average Order Value
+- Churn Rate
+
+### Customer Segmentation
+
+- Segment Distribution
+- Revenue by Segment
+- Segment Performance
+
+### Churn Analysis
+
+- Churn Distribution
+- Recency by Churn Status
+- Churn Drivers
+
+### CLV Prediction
+
+- Actual vs Predicted Spend
+- Prediction Error Analysis
+- CLV Distribution
+
+---
+
+# Dashboard Preview
+
+## Executive Summary
+
+dashboard/quicksight_screenshots/executive_summary.png
+
+## Customer Segmentation
+
+dashboard/quicksight_screenshots/customer_segmentation.png
+
+## Churn Dashboard
+
+dashboard/quicksight_screenshots/churn_dashboard.png
+
+## CLV Dashboard
+
+dashboard/quicksight_screenshots/clv_dashboard.png
+
+---
+
+# Key Business Insights
+
+### Customer Value Concentration
+
+Approximately 79% of customers belong to the Low Value segment, while only 4.6% belong to the High Value segment.
+
+### Customer Retention
+
+Customer inactivity is the strongest indicator of churn behavior.
+
+### Customer Lifetime Value
+
+Historical transaction data alone is insufficient to accurately forecast future customer spending.
+
+### Business Strategy
+
+Organizations should prioritize retention of High Value customers while enriching customer datasets with additional behavioral variables to improve CLV modeling.
+
+---
+
+# Challenges & Lessons Learned
+
+- Identified and documented target leakage in churn prediction.
+- Applied time-based validation for CLV forecasting.
+- Learned the importance of honest model evaluation.
+- Built an end-to-end AWS analytics architecture.
+- Connected cloud analytics outputs directly to business intelligence reporting.
+
+---
+
+# Future Improvements
+
+Potential enhancements include:
+
+- XGBoost CLV models
+- LightGBM regression
+- Probabilistic CLV modeling (BG/NBD + Gamma-Gamma)
+- Review sentiment analysis
+- Product category features
+- Geographic customer features
+- K-Means segmentation
+- AWS Glue ETL pipelines
+- Step Functions orchestration
+- Automated MLOps workflows
+
+---
+
+# Skills Demonstrated
+
+### AWS
+
+- Amazon S3
+- Amazon Athena
+- Amazon SageMaker
+- IAM
+- Data Lake Architecture
+
+### SQL & Analytics
+
+- Customer Analytics
+- SQL Feature Engineering
+- Customer Segmentation
+- RFM Analysis
+- Churn Analytics
+
+### Machine Learning
+
+- Logistic Regression
+- Linear Regression
+- Model Evaluation
+- Target Leakage Detection
+- Feature Importance Analysis
+
+### Business Intelligence
+
+- Power BI
+- Dashboard Design
+- KPI Development
+- Executive Reporting
+
+---
+
+# Resume Project Summary
+
+Built an end-to-end customer analytics and machine learning platform on AWS using Amazon S3, Athena, SageMaker, SQL, Python, and Power BI. Engineered customer-level RFM features for 93K+ customers, developed churn and Customer Lifetime Value (CLV) prediction workflows, created customer segmentation models, integrated machine learning outputs into Athena, and delivered executive dashboards for business decision-making. Demonstrated cloud data engineering, SQL analytics, machine learning evaluation, target leakage detection, and business intelligence reporting within a unified AWS architecture.
+
+---
+
+# Author
 
 **Rimas**
-GitHub: [@Rimas-Codes](https://github.com/Rimas-Codes)
 
-*Dataset: [Olist Brazilian E-Commerce Public Dataset](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (Kaggle).*
+Data Analytics | Business Intelligence | AWS Analytics | Machine Learning
+
+GitHub: https://github.com/Rimas-Codes
+
+Dataset: https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
